@@ -81,39 +81,67 @@ float generateRandomFloat(float min, float max) {
     return res;
 } 
 
-class User{
+class User {
 public:
-    
+    User() {}
 };
 
-class UserCard: public User
-{
+class UserCard : public User {
 public:
     short card_number;
     float cash;
 
-    UserCard(short card_number(card_number), float cash(cash)):  {}
+    // Исправленный конструктор
+    UserCard(short card_number, float cash) : card_number(card_number), cash(cash) {}
 
+    void Payment(){
 
+    }
+
+    void Transaction(){
+
+    }
+
+    void issueReceipt(){
+
+    }
 };
+
 
 int main() {
     short choice;
     cout << "Hello User!\n" << endl;
     cout << "This is your shop making variables:\n";
-    cout << "1. Register/login\n2. Add shop to card" << endl;
+    cout << "1. Register/login" << endl;
+    cout << "2. Show products and add to card" << endl;
+    cout << "3. Remove product in the card" << endl;
+    cout << "4. Buy" << endl;
     cout << "Enter your choice: ";
     cin >> choice;
-    
-    
-    srand(static_cast<unsigned int>(time(NULL))); // Инициализация генератора случайных чисел
 
+    switch(choice){
+        case 1:
+        
+        case 2:
+
+        case 3:
+
+        case 4:
+
+        default: return 0;
+    }
+
+    // Инициализация генератора случайных чисел
+    srand(static_cast<unsigned int>(time(NULL))); 
+    
+    // Списки продуктов
     vector<StoreProduct*> milk_products;
     vector<StoreProduct*> sweet_products;
     vector<StoreProduct*> meat_products;
     vector<StoreProduct*> grain_products;
     vector<StoreProduct*> all_products;
 
+    // Списки для ранмного создания обьектов
     string milk_product[] = {"Milk", "Kefir", "Yogurt", "Sour Cream", "Kumis", "Prostokvasha"};
     string grain_product[] = {"Black Bread", "White Bread", "Wheat", "Rye", "Rice", "Corn"};
     string sweet_product[] = {"Chocolate Candy", "Marmalade Candy", "Nutella", "Kit-Kat", "Bounty", "Twix", "Snickers", "Mars"};
@@ -132,6 +160,7 @@ int main() {
 
     }
 
+    // Вывод данных продукта
     display_and_clear_products(milk_products);
     display_and_clear_products(grain_products);
     display_and_clear_products(meat_products);
@@ -141,7 +170,7 @@ int main() {
     vector<Product> shoppingProducts = {
         Product("Apple", 2.0),
         Product("Banana", 1.5)
-        // Дополнительные продукты по вашему выбору
+        
     };
     shoppingCart(shoppingProducts);
 
@@ -173,6 +202,7 @@ void shoppingCart(vector<Product>& products) {
     cout << "===== Total Cost =====" << endl;
     cout << "Total cost of items in the shopping cart: " << totalCost << " Euros" << endl;
 }
+
 string generateDate() {
     string year = "2024";
     string month = to_string(1 + rand() % 12);

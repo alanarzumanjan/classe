@@ -1,4 +1,4 @@
-TARGET=main2
+TARGET=main3
 SRC_FILE=$(TARGET).cpp
 
 CC=g++
