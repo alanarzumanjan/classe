@@ -7,7 +7,7 @@
 
 using namespace std;
 
-fstream db("shop.db");
+fstream db("user.db");
 
 class User {
 public:
@@ -16,14 +16,15 @@ public:
     string name;
     string email;
     string address;
+    string password;
 
-    User() : userId(0), name(""), email(""), address("") {}
+    User() : userId(0), name(), email(), address(), password() {}
 
     // User registration
     void registerUser() {
         if (db.is_open()) {
             userId = ++nextUserId;  // Assign a unique user ID
-            cout << "Your ID is: " << userId << endl;
+            cout << "Your ID is: " << userId << "Remember it for login" <<endl;
             db << userId << " ";
 
             cout << "Please enter your name: ";
@@ -42,6 +43,8 @@ public:
 
             db << endl;
         }
+        cout << "Registration completed successfully!";
+        cout << "Now log in" << endl << endl;
     }
 
     // User login
@@ -49,6 +52,7 @@ public:
         cout << "Please enter your ID: ";
         cin >> userId;
 
+        bool loginflag = false;
         // Check if the user exists in the database
         bool userFound = false;
         if (db.is_open()) {
@@ -61,6 +65,7 @@ public:
                     name = dbName;
                     email = dbEmail;
                     address = dbAddress;
+                    loginflag = true;
                     break;
                 }
             }
@@ -100,7 +105,6 @@ void reg_or_log_user() {
     } while (flag);
 }
 
-
 class StoreProduct {
 public:
     string product_name;
@@ -120,6 +124,7 @@ public:
         cout << "Weight: " << weight << " kg" << endl;
         cout << "Product Life: " << product_life << endl;
     }
+
 };
 
 class Product {
@@ -139,6 +144,7 @@ public:
     double calculateCost() const {
         return pricePerKg * quantityInCart;
     }
+
 };
 
 float generateRandomFloat(float min, float max) {
@@ -152,35 +158,6 @@ string generateDate() {
     return year + "." + month + "." + day;
 }
 
-void display_and_clear_products(vector<StoreProduct*>& products) {
-    for (size_t i = 0; i < products.size(); ++i) {
-        cout << i + 1 << ". ";
-        products[i]->displayinfo();
-    }
-    for (auto& product : products) {
-        delete product;
-    }
-    products.clear();
-}
-
-void saveCart(const vector<Product>& shoppingProducts, const string& username) {
-    ofstream cartFile("cart.txt", ios::app);
-    cartFile << "User: " << username << endl;
-    for (const auto& product : shoppingProducts) {
-        cartFile << product.name << " - " << product.quantityInCart << " kg" << endl;
-    }
-    cartFile << "======================" << endl;
-    cartFile.close();
-}
-
-void displayShoppingCart(const vector<Product>& shoppingProducts) {
-    cout << "===== Shopping Cart Contents =====" << endl;
-    for (size_t i = 0; i < shoppingProducts.size(); ++i) {
-        cout << i + 1 << ". " << shoppingProducts[i].name << " - " << shoppingProducts[i].quantityInCart << " kg - " << shoppingProducts[i].calculateCost() << " Euros" << endl;
-    }
-    cout << "======================" << endl;
-}
-
 void displayMenu() {
     cout << "===== Menu =====" << endl;
     cout << "1. Register/login" << endl;
@@ -191,8 +168,7 @@ void displayMenu() {
     cout << "Enter your choice: ";
 }
 
-int main() {
-    srand(static_cast<unsigned int>(time(NULL)));
+void generateProduct(){
 
     vector<Product> shoppingProducts;
     vector<StoreProduct*> products;
@@ -209,6 +185,12 @@ int main() {
 
         products.push_back(new StoreProduct(product_names[i], "Product", price, weight, life_date));
     }
+}
+
+int main() {
+    srand(static_cast<unsigned int>(time(NULL)));
+    
+    
 
     int choice;
     
@@ -222,74 +204,53 @@ int main() {
                 // REGISTER OR LOGIN
                 reg_or_log_user();
                 break;
+                
             case 2: {
-            //     cout << "===== Available Products =====" << endl;
-            //     display_and_clear_products(products);
-
-            //     string productName;
-            //     double quantity;
-            //     cout << "Enter the name of the product to add: ";
-            //     cin >> productName;
-
-            //     int productIndex = -1;
-            //     for (size_t i = 0; i < products.size(); ++i) {
-            //         if (products[i]->product_name == productName) {
-            //             productIndex = static_cast<int>(i);
-            //             break;
-            //         }
-            //     }
-
-            //     if (productIndex != -1) {
-            //         cout << "Enter the quantity (in kg) for " << productName << ": ";
-            //         cin >> quantity;
-
-            //         Product newProduct(products[productIndex]->product_name, products[productIndex]->price);
-            //         newProduct.addToCart(quantity);
-            //         newProduct.quantityInCart = quantity;
-            //         shoppingProducts.push_back(newProduct);
-            //         cout << "Product added to the shopping cart." << endl;
-            //     } else {
-            //         cout << "Invalid product name." << endl;
-            //     }
+                if (loginflag){
+                    show_and_add_product();
+                }
+                else{
+                    cout << "You need login" << endl;
+                }
+                // Show products and add product to cart
             } 
             break;
+
             case 3:
-                // if (!shoppingProducts.empty()) {
-                //     cout << "===== Shopping Cart Contents =====" << endl;
-                //     for (size_t i = 0; i < shoppingProducts.size(); ++i) {
-                //         cout << i + 1 << ". " << shoppingProducts[i].name << " - " << shoppingProducts[i].quantityInCart << " kg - " << shoppingProducts[i].calculateCost() << " Euros" << endl;
-                //     }
-
-                //     int productIndex;
-                //     cout << "Enter the index of the product to remove: ";
-                //     cin >> productIndex;
-
-                //     if (productIndex >= 1 && static_cast<size_t>(productIndex) <= shoppingProducts.size()) {
-                //         shoppingProducts.erase(shoppingProducts.begin() + productIndex - 1);
-                //         cout << "Product removed from the shopping cart." << endl;
-                //     } else {
-                //         cout << "Invalid product index." << endl;
-                //     }
-                // } else {
-                //     cout << "Shopping cart is empty." << endl;
-                // }
+                // Remove Product from Cart
+                if (loginflag){
+                    //Remove_fromcart();
+                }
+                else{
+                    cout << "You need login" << endl;
+                }
                 break;
+
             case 4:
-                // displayShoppingCart(shoppingProducts);
+                // Display Shopping Cart
+                if (loginflag){
+                    //display_cart();
+                }
+                else{
+                    cout << "You need login" << endl;
+                }
                 break;
+
             case 5:
-                // saveCart(shoppingProducts, username);
-                // cout << "Thank you for shopping! Your cart has been saved to 'cart.txt'." << endl;
+                // Buy
+                if (loginflag){
+                    //buy();
+                }
+                else{
+                    cout << "You need login" << endl;
+                }
                 break;
+
             default:
                 cout << "Invalid choice. Please enter a valid option." << endl;
         }
 
-    } while (choice != 4);
-
-    for (auto& product : products) {
-        delete product;
-    }
+    } while (choice != 5);
 
     return 0;
 }
